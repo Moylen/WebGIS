@@ -16,7 +16,5 @@ import typeorm from './database/typeorm';
     UserModule,
     AuthModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}
