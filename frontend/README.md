@@ -1,3 +1,0 @@
-# WebGIS Frontend
-
-Пока пусто
