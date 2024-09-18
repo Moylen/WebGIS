@@ -1,17 +1,8 @@
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity } from 'typeorm';
+import { BaseEntity } from '../../shared/entities/base.entity';
 
 @Entity({ name: 'user' })
-export class UserEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class UserEntity extends BaseEntity {
   @Column({ unique: true })
   email: string;
 
@@ -20,13 +11,4 @@ export class UserEntity {
 
   @Column()
   passwordHash: string;
-
-  @CreateDateColumn()
-  createTime: Date;
-
-  @UpdateDateColumn()
-  updateTime: Date;
-
-  @DeleteDateColumn()
-  deleteTime: Date;
 }
