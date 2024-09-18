@@ -1,1 +1,1 @@
-export type JwtUser = { id: number };
+export type JwtContext = { id: number };

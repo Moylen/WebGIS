@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -8,6 +9,7 @@ import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { RegisterDto } from '../auth/dtos/register.dto';
 import { HashService } from '../shared/services/hash.service';
+import { JwtContext } from '../auth/types/jwt-user.type';
 
 @Injectable()
 export class UserService {
@@ -57,5 +59,15 @@ export class UserService {
     if (user) {
       throw new BadRequestException('This email or username already used');
     }
+  }
+
+  async deleteUser(id: number, context: JwtContext) {
+    const user = await this.findByIdOrPanic(id);
+
+    if (user.id !== context.id) {
+      throw new ForbiddenException('Access denied');
+    }
+
+    return await this.userRepository.softRemove(user);
   }
 }

@@ -13,8 +13,8 @@ import typeorm from './database/typeorm';
       useFactory: async (configService: ConfigService) =>
         configService.get('typeorm'),
     }),
-    UserModule,
     AuthModule,
+    UserModule,
   ],
 })
 export class AppModule {}
