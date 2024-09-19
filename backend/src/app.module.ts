@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { PointModule } from './point/point.module';
 import { CommentModule } from './comment/comment.module';
+import { FileModule } from './file/file.module';
 import typeorm from './database/typeorm';
 
 @Module({
@@ -19,6 +20,7 @@ import typeorm from './database/typeorm';
     UserModule,
     PointModule,
     CommentModule,
+    FileModule,
   ],
 })
 export class AppModule {}
