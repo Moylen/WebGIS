@@ -2,17 +2,27 @@ import {
   Body,
   Controller,
   Delete,
+  FileTypeValidator,
   Get,
+  MaxFileSizeValidator,
   Param,
+  ParseFilePipe,
   ParseIntPipe,
   Post,
   Put,
   Query,
+  UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { CommentService } from './comment.service';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CommentSaveDto } from './dtos/comment-save.dto';
 import { Context } from '../auth/decorators/context.decorator';
@@ -22,6 +32,8 @@ import { CommentUpdateDto } from './dtos/comment-update.dto';
 import { CommentSchema } from './schemas/comment.schema';
 import { TransformInterceptor } from '../shared/interceptors/transform.interceptor';
 import { CommentSearchSchema } from './schemas/comment-search.schema';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { FileSaveDto } from '../file/dtos/file-save.dto';
 
 @ApiBearerAuth()
 @ApiTags('Comment')
@@ -73,5 +85,29 @@ export class CommentController {
     @Context() context: JwtContext,
   ) {
     return this.commentService.deleteComment(id, context);
+  }
+
+  @ApiOkResponse({ type: CommentSchema })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: FileSaveDto })
+  @UseInterceptors(
+    new TransformInterceptor(CommentSchema),
+    FileInterceptor('file'),
+  )
+  @Post(':id/photo')
+  async uploadPhoto(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: '.(jpg|jpeg|png)' }),
+          new MaxFileSizeValidator({ maxSize: 4 * 1024 * 1024 }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+    @Param('id', ParseIntPipe) id: number,
+    @Context() context: JwtContext,
+  ) {
+    return this.commentService.uploadPhoto(file, id, context);
   }
 }

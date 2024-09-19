@@ -2,6 +2,7 @@ import { Column, Entity, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../../shared/entities/base.entity';
 import { UserEntity } from '../../user/entities/user.entity';
 import { PointEntity } from '../../point/entities/point.entity';
+import { FileEntity } from '../../file/entities/file.entity';
 
 @Entity({ name: 'comment' })
 export class CommentEntity extends BaseEntity {
@@ -20,4 +21,7 @@ export class CommentEntity extends BaseEntity {
     nullable: false,
   })
   point: PointEntity;
+
+  @ManyToOne(() => FileEntity)
+  photo: FileEntity;
 }

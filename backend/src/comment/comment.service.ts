@@ -5,13 +5,15 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommentEntity } from './entities/comment.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { CommentSaveDto } from './dtos/comment-save.dto';
 import { JwtContext } from '../auth/types/jwt-user.type';
 import { PointService } from '../point/point.service';
 import { UserService } from '../user/user.service';
 import { CommentUpdateDto } from './dtos/comment-update.dto';
 import { CommentSearchDto } from './dtos/comment-search.dto';
+import { FileService } from '../file/file.service';
+import { FileEntity } from '../file/entities/file.entity';
 
 @Injectable()
 export class CommentService {
@@ -20,6 +22,8 @@ export class CommentService {
     private readonly commentRepository: Repository<CommentEntity>,
     private readonly pointService: PointService,
     private readonly userService: UserService,
+    private readonly fileService: FileService,
+    private readonly dataSource: DataSource,
   ) {}
 
   async createComment(dto: CommentSaveDto, context: JwtContext) {
@@ -36,6 +40,34 @@ export class CommentService {
     return await this.commentRepository.save(comment);
   }
 
+  async uploadPhoto(
+    file: Express.Multer.File,
+    commentId: number,
+    context: JwtContext,
+  ): Promise<CommentEntity> {
+    const comment = await this.findByIdOrPanic(commentId);
+
+    if (comment.creator.id !== context.id) {
+      throw new ForbiddenException('Access denied');
+    }
+
+    const qRunner = this.dataSource.createQueryRunner();
+    await qRunner.connect();
+    await qRunner.startTransaction();
+    try {
+      comment.photo = await this.fileService.uploadFile(file, qRunner);
+      await qRunner.manager.save(comment);
+      await qRunner.commitTransaction();
+
+      return comment;
+    } catch (err) {
+      await qRunner.rollbackTransaction();
+      throw err;
+    } finally {
+      await qRunner.release();
+    }
+  }
+
   async findByIdOrPanic(id: number) {
     const comment = await this.commentRepository.findOne({
       where: {
@@ -43,6 +75,7 @@ export class CommentService {
       },
       relations: {
         creator: true,
+        photo: true,
       },
     });
 

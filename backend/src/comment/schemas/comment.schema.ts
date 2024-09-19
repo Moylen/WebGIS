@@ -1,6 +1,7 @@
 import { UserShortSchema } from '../../user/schemas/user-short.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
+import { FileSchema } from '../../file/schema/file.schema';
 
 export class CommentSchema {
   @Expose()
@@ -19,6 +20,11 @@ export class CommentSchema {
   @Type(() => UserShortSchema)
   @ApiProperty({ type: UserShortSchema })
   creator: UserShortSchema;
+
+  @Expose()
+  @Type(() => FileSchema)
+  @ApiProperty({ type: FileSchema })
+  photo: FileSchema;
 
   @Expose()
   @ApiProperty()
