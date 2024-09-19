@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { PointModule } from './point/point.module';
+import { CommentModule } from './comment/comment.module';
 import typeorm from './database/typeorm';
 
 @Module({
@@ -17,6 +18,7 @@ import typeorm from './database/typeorm';
     AuthModule,
     UserModule,
     PointModule,
+    CommentModule,
   ],
 })
 export class AppModule {}

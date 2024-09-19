@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from '../../shared/entities/base.entity';
 import { PointEntity } from '../../point/entities/point.entity';
+import { CommentEntity } from '../../comment/entities/comment.entity';
 
 @Entity({ name: 'user' })
 export class UserEntity extends BaseEntity {
@@ -15,7 +16,11 @@ export class UserEntity extends BaseEntity {
 
   @OneToMany(() => PointEntity, (point) => point.creator, {
     cascade: true,
-    nullable: false,
   })
   points: PointEntity[];
+
+  @OneToMany(() => CommentEntity, (comment) => comment.creator, {
+    cascade: true,
+  })
+  comments: CommentEntity[];
 }
