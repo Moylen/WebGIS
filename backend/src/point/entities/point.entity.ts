@@ -5,7 +5,10 @@ import { PointTypeEnum } from '../enums/point-type.enum';
 
 @Entity({ name: 'point' })
 export class PointEntity extends BaseEntity {
-  @Column('int', { array: true })
+  @Column()
+  title: string;
+
+  @Column('decimal', { array: true })
   coordinate: number[][];
 
   @Column({ enum: PointTypeEnum, default: PointTypeEnum.POINT })
