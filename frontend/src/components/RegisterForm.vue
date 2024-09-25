@@ -1,80 +1,61 @@
 <template>
-  <v-form ref="form" v-model="valid" lazy-validation>
+  <v-form @submit.prevent="onSubmit">
     <h2 class="text-center mb-4">Регистрация</h2>
     <v-text-field
       v-model="username"
-      :rules="usernameRules"
+      :error-messages="errors.username"
       label="Имя пользователя"
-      required
     />
     <v-text-field
       v-model="email"
-      :rules="emailRules"
+      :error-messages="errors.email"
       label="Эл. почта"
-      required
     />
     <v-text-field
       v-model="password"
-      :rules="passwordRules"
+      :error-messages="errors.password"
       label="Пароль"
       type="password"
-      required
     />
-    <v-btn :disabled="!valid" @click="register">Зарегистрироваться</v-btn>
+    <v-btn type="submit">Зарегистрироваться</v-btn>
   </v-form>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue';
+<script setup lang="ts">
+import { useForm, useField } from 'vee-validate';
+import * as yup from 'yup';
 import axios from '../api/axios.ts';
 import { useRouter } from 'vue-router';
 
-export default defineComponent({
-  setup() {
-    const valid = ref(false);
-    const username = ref('');
-    const email = ref('');
-    const password = ref('');
+const router = useRouter();
 
-    const router = useRouter();
+const { handleSubmit, errors } = useForm({
+  validationSchema: yup.object({
+    username: yup.string()
+      .min(3, 'Поле должно содержать минимум 3 символа')
+      .required('Поле не должно быть пустым'),
+    email: yup.string()
+      .email('Пример: test@mail.ru')
+      .required('Поле не должно быть пустым'),
+    password: yup.string()
+      .required('Поле не должно быть пустым'),
+  }),
+});
 
-    const usernameRules = [
-      (v: string) => !!v || 'Поле не должно быть пустым',
-      (v: string) => (v && v.length >= 3) || 'Поле должно быть не менее 3 символов',
-    ];
-    const emailRules = [
-      (v: string) => !!v || 'Поле не должно быть пустым',
-      (v: string) => /.+@.+\..+/.test(v) || 'Почта должна быть валидна',
-    ];
-    const passwordRules = [
-      (v: string) => !!v || 'Поле не должно быть пустым',
-    ];
+const { value: username } = useField('username');
+const { value: email } = useField('email');
+const { value: password } = useField('password');
 
-    const register = async () => {
-      if (valid.value) {
-        try {
-          await axios.post('/auth/register', {
-            username: username.value,
-            email: email.value,
-            password: password.value,
-          });
-          await router.push('/login');
-        } catch (error) {
-          console.error(error);
-        }
-      }
-    };
-
-    return {
-      valid,
-      username,
-      email,
-      password,
-      usernameRules,
-      emailRules,
-      passwordRules,
-      register,
-    };
-  },
+const onSubmit = handleSubmit(async () => {
+  try {
+    await axios.post('/auth/register', {
+      username: username,
+      email: email,
+      password: password,
+    });
+    await router.push('/login');
+  } catch (error) {
+    console.error(error);
+  }
 });
 </script>

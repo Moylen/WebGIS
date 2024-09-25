@@ -1,67 +1,52 @@
 <template>
-  <v-form ref="form" v-model="valid" lazy-validation>
+  <v-form @submit.prevent="onSubmit">
     <h2 class="text-center mb-4">Авторизация</h2>
     <v-text-field
       v-model="email"
-      :rules="emailRules"
+      :error-messages="errors.email"
       label="Эл. почта"
-      required
     />
     <v-text-field
       v-model="password"
-      :rules="passwordRules"
+      :error-messages="errors.password"
       label="Пароль"
       type="password"
-      required
     />
-    <v-btn :disabled="!valid" @click="login">Войти</v-btn>
+    <v-btn type="submit">Войти</v-btn>
   </v-form>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue';
+<script setup lang="ts">
 import axios from '../api/axios.ts';
 import { useRouter } from 'vue-router';
+import { useField, useForm } from 'vee-validate';
+import * as yup from 'yup';
 
-export default defineComponent({
-  setup() {
-    const valid = ref(false);
-    const email = ref('');
-    const password = ref('');
+const router = useRouter();
 
-    const router = useRouter();
+const { handleSubmit, errors } = useForm({
+  validationSchema: yup.object({
+    email: yup.string()
+      .email('Пример: test@mail.ru')
+      .required('Поле не должно быть пустым'),
+    password: yup.string()
+      .required('Поле не должно быть пустым'),
+  }),
+});
 
-    const emailRules = [
-      (v: string) => !!v || 'Поле не должно быть пустым',
-      (v: string) => /.+@.+\..+/.test(v) || 'Почта должна быть валидна',
-    ];
-    const passwordRules = [
-      (v: string) => !!v || 'Поле не должно быть пустым',
-    ];
+const { value: email } = useField('email');
+const { value: password } = useField('password');
 
-    const login = async () => {
-      if (valid.value) {
-        try {
-          const response = await axios.post('/auth/login', {
-            email: email.value,
-            password: password.value,
-          });
-          localStorage.setItem('accessToken', response.data.accessToken);
-          await router.push('/login');
-        } catch (error) {
-          console.error(error);
-        }
-      }
-    };
-
-    return {
-      valid,
-      email,
-      password,
-      emailRules,
-      passwordRules,
-      login,
-    };
-  },
+const onSubmit = handleSubmit(async () => {
+  try {
+    const response = await axios.post('/auth/login', {
+      email: email.value,
+      password: password.value,
+    });
+    localStorage.setItem('accessToken', response.data.accessToken);
+    await router.push('/login');
+  } catch (error) {
+    console.error(error);
+  }
 });
 </script>
