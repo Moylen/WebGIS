@@ -1,5 +1,4 @@
 import { createApp } from 'vue';
-import { aliases, mdi } from 'vuetify/iconsets/mdi';
 
 // Components
 import App from './App.vue';
@@ -10,6 +9,7 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import router from './router';
+import { aliases, mdi } from 'vuetify/iconsets/mdi';
 
 const vuetify = createVuetify({
   components,

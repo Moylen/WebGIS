@@ -12,6 +12,7 @@
     "@mdi/font": "^7.4.47",
     "@vee-validate/yup": "^4.13.2",
     "axios": "^1.7.7",
+    "ol": "^10.2.0",
     "vue": "^3.4.37",
     "vue-router": "4",
     "vuetify": "^3.7.2"
