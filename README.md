@@ -10,7 +10,7 @@
 
 Backend: Node.js, NestJS, TypeORM, PostgreSQL
 
-Frontend: Vue.js, Vue Router, Vuetify
+Frontend: Vue.js, Vue Router, Vuetify, VeeValidate
 
 Other: Docker
 
