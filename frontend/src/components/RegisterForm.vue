@@ -1,26 +1,3 @@
-<template>
-  <v-form @submit.prevent="onSubmit">
-    <h2 class="text-center mb-4">Регистрация</h2>
-    <v-text-field
-      v-model="username"
-      :error-messages="errors.username"
-      label="Имя пользователя"
-    />
-    <v-text-field
-      v-model="email"
-      :error-messages="errors.email"
-      label="Эл. почта"
-    />
-    <v-text-field
-      v-model="password"
-      :error-messages="errors.password"
-      label="Пароль"
-      type="password"
-    />
-    <v-btn type="submit">Зарегистрироваться</v-btn>
-  </v-form>
-</template>
-
 <script setup lang="ts">
 import { useForm, useField } from 'vee-validate';
 import * as yup from 'yup';
@@ -59,3 +36,26 @@ const onSubmit = handleSubmit(async () => {
   }
 });
 </script>
+
+<template>
+  <v-form @submit.prevent="onSubmit">
+    <h2 class="text-center mb-4">Регистрация</h2>
+    <v-text-field
+      v-model="username"
+      :error-messages="errors.username"
+      label="Имя пользователя"
+    />
+    <v-text-field
+      v-model="email"
+      :error-messages="errors.email"
+      label="Эл. почта"
+    />
+    <v-text-field
+      v-model="password"
+      :error-messages="errors.password"
+      label="Пароль"
+      type="password"
+    />
+    <v-btn type="submit">Зарегистрироваться</v-btn>
+  </v-form>
+</template>

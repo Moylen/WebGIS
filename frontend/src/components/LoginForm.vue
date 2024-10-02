@@ -1,21 +1,3 @@
-<template>
-  <v-form @submit.prevent="onSubmit">
-    <h2 class="text-center mb-4">Авторизация</h2>
-    <v-text-field
-      v-model="email"
-      :error-messages="errors.email"
-      label="Эл. почта"
-    />
-    <v-text-field
-      v-model="password"
-      :error-messages="errors.password"
-      label="Пароль"
-      type="password"
-    />
-    <v-btn type="submit">Войти</v-btn>
-  </v-form>
-</template>
-
 <script setup lang="ts">
 import axios from '../api/axios.ts';
 import { useRouter } from 'vue-router';
@@ -50,3 +32,21 @@ const onSubmit = handleSubmit(async () => {
   }
 });
 </script>
+
+<template>
+  <v-form @submit.prevent="onSubmit">
+    <h2 class="text-center mb-4">Авторизация</h2>
+    <v-text-field
+      v-model="email"
+      :error-messages="errors.email"
+      label="Эл. почта"
+    />
+    <v-text-field
+      v-model="password"
+      :error-messages="errors.password"
+      label="Пароль"
+      type="password"
+    />
+    <v-btn type="submit">Войти</v-btn>
+  </v-form>
+</template>
