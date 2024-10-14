@@ -38,7 +38,7 @@ export class PointController {
 
   @UseInterceptors(new TransformInterceptor(PointSearchSchema))
   @ApiOkResponse({ type: PointSearchSchema })
-  @Get('/search')
+  @Get()
   async search(@Query() dto: PointSearchDto) {
     return this.pointService.search(dto);
   }
