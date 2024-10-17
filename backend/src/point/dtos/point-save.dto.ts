@@ -1,4 +1,3 @@
-import { PointTypeEnum } from '../enums/point-type.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
@@ -13,7 +12,7 @@ export class PointSaveDto {
   @IsNotEmpty()
   coordinate: number[];
 
-  @ApiProperty()
-  @IsNotEmpty()
-  type: PointTypeEnum;
+  // @ApiProperty()
+  // @IsNotEmpty()
+  // type: PointTypeEnum;
 }
