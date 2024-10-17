@@ -14,7 +14,3 @@ import Navbar from './components/Navbar.vue';
     <v-footer app></v-footer>
   </v-app>
 </template>
-
-<style scoped>
-
-</style>

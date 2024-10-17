@@ -3,9 +3,12 @@ import { useForm, useField } from 'vee-validate';
 import * as yup from 'yup';
 import axios from '../api/axios.ts';
 import { useRouter } from 'vue-router';
+import { User } from '../types';
 
 const router = useRouter();
 
+
+// Form
 const { handleSubmit, errors } = useForm({
   validationSchema: yup.object({
     username: yup.string()
@@ -19,13 +22,13 @@ const { handleSubmit, errors } = useForm({
   }),
 });
 
-const { value: username } = useField('username');
-const { value: email } = useField('email');
-const { value: password } = useField('password');
+const { value: username } = useField<string>('username');
+const { value: email } = useField<string>('email');
+const { value: password } = useField<string>('password');
 
 const onSubmit = handleSubmit(async () => {
   try {
-    await axios.post('/auth/register', {
+    await axios.post<User>('/auth/register', {
       username: username,
       email: email,
       password: password,
