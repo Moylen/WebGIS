@@ -11,7 +11,7 @@ export class PointSaveDto {
   @ApiProperty()
   @IsArray({ each: true })
   @IsNotEmpty()
-  coordinate: number[][];
+  coordinate: number[];
 
   @ApiProperty()
   @IsNotEmpty()

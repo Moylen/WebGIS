@@ -12,9 +12,9 @@ export class PointSchema {
   @ApiProperty()
   title: string;
 
-  @Expose()
-  @ApiProperty()
-  type: PointTypeEnum;
+  // @Expose()
+  // @ApiProperty()
+  // type: PointTypeEnum;
 
   @Expose()
   @ApiProperty()
