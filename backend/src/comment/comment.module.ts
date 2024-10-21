@@ -10,8 +10,8 @@ import { UserService } from '../user/user.service';
 import { UserEntity } from '../user/entities/user.entity';
 import { PointEntity } from '../point/entities/point.entity';
 import { HashService } from '../shared/services/hash.service';
-import { FileEntity } from '../file/entities/file.entity';
 import { FileService } from '../file/file.service';
+import { FileEntity } from '../file/entities/file.entity';
 
 @Module({
   imports: [
@@ -23,7 +23,6 @@ import { FileService } from '../file/file.service';
     ]),
     PointModule,
     UserModule,
-    FileEntity,
   ],
   controllers: [CommentController],
   providers: [
