@@ -17,11 +17,18 @@ export interface User {
 
 export type Coordinate = number[];
 
+export interface File {
+  id: number;
+  filePath: string;
+  mimeType: string;
+}
+
 export interface Point {
   id: number;
   title: string;
   coordinate: Coordinate;
   creator: Omit<User, 'createTime' | 'updateTime'>;
+  photo: File | null;
   createTime: Date;
   updateTime: Date;
 }

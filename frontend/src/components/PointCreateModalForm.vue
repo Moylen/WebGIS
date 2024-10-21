@@ -18,18 +18,34 @@ const { handleSubmit, errors, resetForm } = useForm({
   validationSchema: yup.object({
     title: yup.string()
       .required('Поле не может быть пустым'),
+    file: yup.mixed(),
   }),
 });
 
 const { value: title } = useField<string>('title');
+const { value: file }= useField<File | null>('file');
 
 const onSubmit = handleSubmit(async () => {
   try {
-    const response = await axios.post<Point>('/point', {
+    const pointResponse = await axios.post<Point>('/point', {
       title: title.value,
       coordinate: props.coords,
     });
-    emit('point-add', response.data)
+
+    if (file.value) {
+      const formData = new FormData();
+      formData.append('file', file.value);
+      await axios.post<File>(
+        `/point/${pointResponse.data.id}/photo`, formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          }
+        }
+      )
+    }
+
+    emit('point-add', pointResponse.data)
     closeModal();
   } catch (error) {
     console.error(error);
@@ -58,7 +74,12 @@ const closeModal = () => {
             v-model="title"
             :error-messages="errors.title"
             label="Название"
-          ></v-text-field>
+          />
+          <v-file-input
+            v-model="file"
+            :error-messages="errors.file"
+            label="Фотография"
+          />
         </v-card-text>
 
         <v-card-actions>
