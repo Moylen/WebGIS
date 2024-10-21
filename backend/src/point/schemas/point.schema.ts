@@ -1,7 +1,7 @@
-import { PointTypeEnum } from '../enums/point-type.enum';
 import { UserShortSchema } from '../../user/schemas/user-short.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
+import { FileSchema } from '../../file/schema/file.schema';
 
 export class PointSchema {
   @Expose()
@@ -24,6 +24,11 @@ export class PointSchema {
   @Type(() => UserShortSchema)
   @ApiProperty()
   creator: UserShortSchema;
+
+  @Expose()
+  @Type(() => FileSchema)
+  @ApiProperty({ type: FileSchema })
+  photo: FileSchema;
 
   @Expose()
   @ApiProperty()

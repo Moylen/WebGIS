@@ -2,12 +2,16 @@ import {
   Body,
   Controller,
   Delete,
+  FileTypeValidator,
   Get,
+  MaxFileSizeValidator,
   Param,
+  ParseFilePipe,
   ParseIntPipe,
   Post,
   Put,
   Query,
+  UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -15,12 +19,20 @@ import { PointService } from './point.service';
 import { PointSaveDto } from './dtos/point-save.dto';
 import { JwtContext } from '../auth/types/jwt-user.type';
 import { Context } from '../auth/decorators/context.decorator';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PointSchema } from './schemas/point.schema';
 import { TransformInterceptor } from '../shared/interceptors/transform.interceptor';
 import { PointSearchDto } from './dtos/point-search.dto';
 import { PointSearchSchema } from './schemas/point-search.schema';
+import { FileSaveDto } from '../file/dtos/file-save.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiBearerAuth()
 @ApiTags('Point')
@@ -68,5 +80,29 @@ export class PointController {
     @Context() context: JwtContext,
   ) {
     return this.pointService.deletePoint(id, context);
+  }
+
+  @ApiOkResponse({ type: PointSchema })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: FileSaveDto })
+  @UseInterceptors(
+    new TransformInterceptor(PointSchema),
+    FileInterceptor('file'),
+  )
+  @Post(':id/photo')
+  async uploadPhoto(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: '.(jpg|jpeg|png)' }),
+          new MaxFileSizeValidator({ maxSize: 4 * 1024 * 1024 }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+    @Param('id', ParseIntPipe) id: number,
+    @Context() context: JwtContext,
+  ) {
+    return this.pointService.uploadPhoto(file, id, context);
   }
 }

@@ -5,11 +5,12 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PointEntity } from './entities/point.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { PointSaveDto } from './dtos/point-save.dto';
 import { JwtContext } from '../auth/types/jwt-user.type';
 import { UserService } from '../user/user.service';
 import { PointSearchDto } from './dtos/point-search.dto';
+import { FileService } from '../file/file.service';
 
 @Injectable()
 export class PointService {
@@ -17,6 +18,8 @@ export class PointService {
     @InjectRepository(PointEntity)
     private readonly pointRepository: Repository<PointEntity>,
     private readonly userService: UserService,
+    private readonly fileService: FileService,
+    private readonly dataSource: DataSource,
   ) {}
 
   async createPoint(
@@ -72,6 +75,34 @@ export class PointService {
     const [items, total] = await searchQuery.getManyAndCount();
 
     return { total, items };
+  }
+
+  async uploadPhoto(
+    file: Express.Multer.File,
+    commentId: number,
+    context: JwtContext,
+  ): Promise<PointEntity> {
+    const point = await this.findByIdOrPanic(commentId);
+
+    if (point.creator.id !== context.id) {
+      throw new ForbiddenException('Access denied');
+    }
+
+    const qRunner = this.dataSource.createQueryRunner();
+    await qRunner.connect();
+    await qRunner.startTransaction();
+    try {
+      point.photo = await this.fileService.uploadFile(file, qRunner);
+      await qRunner.manager.save(point);
+      await qRunner.commitTransaction();
+
+      return point;
+    } catch (err) {
+      await qRunner.rollbackTransaction();
+      throw err;
+    } finally {
+      await qRunner.release();
+    }
   }
 
   async updatePoint(

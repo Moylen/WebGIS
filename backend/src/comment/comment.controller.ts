@@ -74,28 +74,4 @@ export class CommentController {
   ) {
     return this.commentService.deleteComment(id, context);
   }
-
-  // @ApiOkResponse({ type: CommentSchema })
-  // @ApiConsumes('multipart/form-data')
-  // @ApiBody({ type: FileSaveDto })
-  // @UseInterceptors(
-  //   new TransformInterceptor(CommentSchema),
-  //   FileInterceptor('file'),
-  // )
-  // @Post(':id/photo')
-  // async uploadPhoto(
-  //   @UploadedFile(
-  //     new ParseFilePipe({
-  //       validators: [
-  //         new FileTypeValidator({ fileType: '.(jpg|jpeg|png)' }),
-  //         new MaxFileSizeValidator({ maxSize: 4 * 1024 * 1024 }),
-  //       ],
-  //     }),
-  //   )
-  //   file: Express.Multer.File,
-  //   @Param('id', ParseIntPipe) id: number,
-  //   @Context() context: JwtContext,
-  // ) {
-  //   return this.commentService.uploadPhoto(file, id, context);
-  // }
 }
