@@ -6,6 +6,8 @@ import { mdiMapMarker } from '@mdi/js';
 import PointCreateModalForm from './PointCreateModalForm.vue';
 import axios from '../api/axios.ts';
 import { Coordinate, Paginate, Point } from '../types';
+import PointModal from './PointModal.vue';
+import { arraysAreEqual, getCoordinatesFromFeatures } from '../utils';
 
 // Constants
 const MAP_CENTER = [92.7975620, 55.9945039];
@@ -16,11 +18,13 @@ const MAP_PROJECTION = 'EPSG:4326';
 const getAllPointsCoords = async (): Promise<void> => {
   const response = await axios.get<Paginate<Point>>('/point');
   points.value = response.data.items;
-}
+};
 
 // Refs
 const points = ref<Point[]>([]);
-const isModalVisible = ref<boolean>(false);
+const selectedPoint = ref<Point | undefined>();
+const isModalFormVisible = ref<boolean>(false);
+const isPointModalVisible = ref<boolean>(false);
 const newMarkerCoords = ref<Coordinate | null>(null);
 
 // Handlers
@@ -28,22 +32,31 @@ const handleMapClick = (e: MapBrowserEvent<UIEvent>): void => {
   const features = e.map.getFeaturesAtPixel(e.pixel);
 
   if (features.length > 0) {
-    // TODO: Добавить сайд-меню для информации
-  } else {
-    newMarkerCoords.value = e.coordinate;
-    isModalVisible.value = true;
+    const coordinates = getCoordinatesFromFeatures(features);
+
+    if (!coordinates) return;
+
+    selectedPoint.value = points.value.find(
+      (point: Point) => arraysAreEqual(point.coordinate, coordinates),
+    );
+    isPointModalVisible.value = !!selectedPoint.value;
+
+    return;
   }
+
+  newMarkerCoords.value = e.coordinate;
+  isModalFormVisible.value = true;
 };
 
 onMounted(() => {
   getAllPointsCoords();
-})
+});
 </script>
 
 <template>
   <v-container fluid class="h-100">
     <Map.OlMap class="h-100" @click="handleMapClick">
-      <Map.OlView :center="MAP_CENTER" :zoom="MAP_ZOOM" :projection="MAP_PROJECTION" /> />
+      <Map.OlView :center="MAP_CENTER" :zoom="MAP_ZOOM" :projection="MAP_PROJECTION" />
       <Layers.OlTileLayer>
         <Sources.OlSourceOsm />
       </Layers.OlTileLayer>
@@ -68,8 +81,13 @@ onMounted(() => {
   </v-container>
   <PointCreateModalForm
     :coords="newMarkerCoords"
-    :is-visible="isModalVisible"
-    @close="isModalVisible = false"
+    :is-visible="isModalFormVisible"
+    @close="isModalFormVisible = false"
     @point-add="(point: Point) => points.push(point)"
+  />
+  <PointModal
+    :is-visible="isPointModalVisible"
+    :point="selectedPoint"
+    @close="isPointModalVisible = false"
   />
 </template>

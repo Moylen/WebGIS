@@ -21,7 +21,7 @@ export interface Point {
   id: number;
   title: string;
   coordinate: Coordinate;
-  creator: Pick<User, 'id' | 'username'>;
+  creator: Omit<User, 'createTime' | 'updateTime'>;
   createTime: Date;
   updateTime: Date;
 }
