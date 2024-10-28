@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import axios from '../api/axios.ts';
-import { useRouter } from 'vue-router';
 import { useField, useForm } from 'vee-validate';
 import * as yup from 'yup';
 import { AccessToken } from '../types';
-
-const router = useRouter();
+import router from '../router';
 
 // Form
 const { handleSubmit, errors } = useForm({

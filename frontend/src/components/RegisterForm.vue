@@ -2,10 +2,8 @@
 import { useForm, useField } from 'vee-validate';
 import * as yup from 'yup';
 import axios from '../api/axios.ts';
-import { useRouter } from 'vue-router';
 import { User } from '../types';
-
-const router = useRouter();
+import router from '../router';
 
 
 // Form

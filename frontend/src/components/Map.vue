@@ -23,10 +23,10 @@ const getAllPointsCoords = async (): Promise<void> => {
 
 // Refs
 const points = ref<Point[]>([]);
-const selectedPoint = ref<Point | undefined>();
+const selectedPoint = ref<Point>();
 const isModalFormVisible = ref<boolean>(false);
 const isPointModalVisible = ref<boolean>(false);
-const newMarkerCoords = ref<Coordinate | undefined>();
+const newMarkerCoords = ref<Coordinate>();
 
 // Handlers
 const handleMapClick = (e: MapBrowserEvent<UIEvent>): void => {
