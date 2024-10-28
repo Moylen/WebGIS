@@ -8,6 +8,9 @@ const routes = [
   {
     path: '/',
     component: HomePage,
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: '/register',
@@ -16,9 +19,6 @@ const routes = [
   {
     path: '/login',
     component: LoginPage,
-    meta: {
-      requiresAuth: true,
-    },
   },
 ];
 
