@@ -5,6 +5,10 @@ import * as yup from 'yup';
 import { AccessToken } from '../types';
 import router from '../router';
 import api from '../api/api.ts';
+import { useAuthStore } from '../store/auth.ts';
+
+// Store
+const authStore = useAuthStore();
 
 // Form
 const { handleSubmit, errors } = useForm({
@@ -26,7 +30,7 @@ const onSubmit = handleSubmit(async () => {
       email: email.value,
       password: password.value,
     });
-    localStorage.setItem('accessToken', response.data.accessToken);
+    authStore.login(response.data.accessToken);
     await router.push('/');
   } catch (error) {
     console.error(error);

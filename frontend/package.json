@@ -15,6 +15,7 @@
     "ol": "^10.2.1",
     "ol-contextmenu": "^5.5.0",
     "ol-ext": "^4.0.23",
+    "pinia": "^2.2.4",
     "vue": "^3.4.37",
     "vue-router": "4",
     "vue3-openlayers": "^11.2.1",

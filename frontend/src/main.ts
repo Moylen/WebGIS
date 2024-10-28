@@ -3,6 +3,11 @@ import { createApp } from 'vue';
 // Components
 import App from './App.vue';
 
+// Pinia
+import { createPinia } from 'pinia';
+
+const pinia = createPinia();
+
 // OpenLayers
 import {
   Map,
@@ -32,6 +37,7 @@ const vuetify = createVuetify({
 });
 
 createApp(App)
+  .use(pinia)
   .use(vuetify)
   .use(router)
   .use(Map)
