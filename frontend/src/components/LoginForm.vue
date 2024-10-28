@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import axios from '../api/axios.ts';
+
 import { useField, useForm } from 'vee-validate';
 import * as yup from 'yup';
 import { AccessToken } from '../types';
 import router from '../router';
+import api from '../api/api.ts';
 
 // Form
 const { handleSubmit, errors } = useForm({
@@ -21,7 +22,7 @@ const { value: password } = useField<string>('password');
 
 const onSubmit = handleSubmit(async () => {
   try {
-    const response = await axios.post<AccessToken>('/auth/login', {
+    const response = await api.post<AccessToken>('/auth/login', {
       email: email.value,
       password: password.value,
     });

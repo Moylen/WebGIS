@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useField, useForm } from 'vee-validate';
 import * as yup from 'yup';
-import axios from '../api/axios.ts';
+import api from '../api/api.ts';
 import { Coordinate, Point } from '../types';
 
 const { isVisible, coordinates } = defineProps<{
@@ -27,7 +27,7 @@ const { value: file } = useField<File | null>('file');
 
 const onSubmit = handleSubmit(async () => {
   try {
-    const pointResponse = await axios.post<Point>('/point', {
+    const pointResponse = await api.post<Point>('/point', {
       title: title.value,
       coordinate: coordinates,
     });
@@ -35,7 +35,7 @@ const onSubmit = handleSubmit(async () => {
     if (file.value) {
       const formData = new FormData();
       formData.append('file', file.value);
-      await axios.post<File>(
+      await api.post<File>(
         `/point/${pointResponse.data.id}/photo`, formData,
         {
           headers: {

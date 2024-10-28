@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useForm, useField } from 'vee-validate';
 import * as yup from 'yup';
-import axios from '../api/axios.ts';
+import api from '../api/api.ts';
 import { User } from '../types';
 import router from '../router';
 
@@ -26,7 +26,7 @@ const { value: password } = useField<string>('password');
 
 const onSubmit = handleSubmit(async () => {
   try {
-    await axios.post<User>('/auth/register', {
+    await api.post<User>('/auth/register', {
       username: username.value,
       email: email.value,
       password: password.value,

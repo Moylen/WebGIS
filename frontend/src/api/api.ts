@@ -6,12 +6,12 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-api.interceptors.request.use(config => {
+api.interceptors.request.use(request => {
   const token = localStorage.getItem('accessToken');
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    request.headers.Authorization = `Bearer ${token}`;
   }
-  return config;
+  return request;
 });
 
 api.interceptors.response.use(
@@ -25,4 +25,4 @@ api.interceptors.response.use(
   },
 );
 
-export default axios;
+export default api;

@@ -4,7 +4,7 @@ import { MapBrowserEvent } from 'ol';
 import { onMounted, ref } from 'vue';
 import { mdiMapMarker } from '@mdi/js';
 import PointCreateModalForm from './PointCreateModalForm.vue';
-import axios from '../api/axios.ts';
+import api from '../api/api.ts';
 import { Coordinate, Paginate, Point } from '../types';
 import PointModal from './PointModal.vue';
 import { arraysAreEqual, getCoordinatesFromFeatures } from '../utils';
@@ -17,7 +17,7 @@ const MAP_ZOOM = 15;
 
 // Api
 const getAllPointsCoords = async (): Promise<void> => {
-  const response = await axios.get<Paginate<Point>>('/point');
+  const response = await api.get<Paginate<Point>>('/point');
   points.value = response.data.items;
 };
 
