@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Point } from '../types';
 
-const { isVisible, point } = defineProps<{
+const props = defineProps<{
   isVisible: boolean,
   point?: Point,
 }>();
@@ -15,14 +15,14 @@ const closeModal = (): void => {
 </script>
 
 <template>
-  <v-dialog v-model="isVisible" @click:outside="closeModal" max-width="600">
+  <v-dialog v-model="props.isVisible" @click:outside="closeModal" max-width="600">
     <v-card>
       <v-card-title>
-        <span class="headline">Информация о точке {{ point?.title || '' }}</span>
+        <span class="headline">Информация о точке {{ props.point?.title || '' }}</span>
       </v-card-title>
       <v-card-text>
         <p>Координаты:</p>
-        <p>{{ point?.coordinate || '' }}</p>
+        <p>{{ props.point?.coordinate || '' }}</p>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>

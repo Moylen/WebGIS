@@ -4,7 +4,7 @@ import * as yup from 'yup';
 import api from '../api/api.ts';
 import { Coordinate, Point } from '../types';
 
-const { isVisible, coordinates } = defineProps<{
+const props = defineProps<{
   isVisible: boolean,
   coordinates?: Coordinate,
 }>();
@@ -29,7 +29,7 @@ const onSubmit = handleSubmit(async () => {
   try {
     const pointResponse = await api.post<Point>('/point', {
       title: title.value,
-      coordinate: coordinates,
+      coordinate: props.coordinates,
     });
 
     if (file.value) {
@@ -61,7 +61,7 @@ const closeModal = () => {
 
 <template>
   <v-dialog
-    v-model="isVisible"
+    v-model="props.isVisible"
     @click:outside="closeModal"
     @submit.prevent="onSubmit"
     max-width="500px">
