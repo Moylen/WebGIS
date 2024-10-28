@@ -4,13 +4,13 @@ import * as yup from 'yup';
 import axios from '../api/axios.ts';
 import { Coordinate, Point } from '../types';
 
-const props = defineProps<{
+const { isVisible, coordinates } = defineProps<{
   isVisible: boolean,
-  coords: Coordinate | null,
+  coordinates?: Coordinate,
 }>();
 const emit = defineEmits<{
   (e: 'close'): void,
-  (e: 'point-add', point: Point): void,
+  (e: 'pointAdd', point: Point): void,
 }>();
 
 // Form
@@ -23,13 +23,13 @@ const { handleSubmit, errors, resetForm } = useForm({
 });
 
 const { value: title } = useField<string>('title');
-const { value: file }= useField<File | null>('file');
+const { value: file } = useField<File | null>('file');
 
 const onSubmit = handleSubmit(async () => {
   try {
     const pointResponse = await axios.post<Point>('/point', {
       title: title.value,
-      coordinate: props.coords,
+      coordinate: coordinates,
     });
 
     if (file.value) {
@@ -39,13 +39,13 @@ const onSubmit = handleSubmit(async () => {
         `/point/${pointResponse.data.id}/photo`, formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
-          }
-        }
-      )
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
     }
 
-    emit('point-add', pointResponse.data)
+    emit('pointAdd', pointResponse.data);
     closeModal();
   } catch (error) {
     console.error(error);
@@ -61,7 +61,7 @@ const closeModal = () => {
 
 <template>
   <v-dialog
-    v-model="props.isVisible"
+    v-model="isVisible"
     @click:outside="closeModal"
     @submit.prevent="onSubmit"
     max-width="500px">

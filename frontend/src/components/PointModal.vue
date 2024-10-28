@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { Point } from '../types';
 
-const props = defineProps<{
-  point: Point | undefined,
+const { isVisible, point } = defineProps<{
   isVisible: boolean,
+  point?: Point,
 }>();
 const emit = defineEmits<{
   (e: 'close'): void,
@@ -11,18 +11,18 @@ const emit = defineEmits<{
 
 const closeModal = (): void => {
   emit('close');
-}
+};
 </script>
 
 <template>
-  <v-dialog v-model="props.isVisible" @click:outside="closeModal" max-width="600">
+  <v-dialog v-model="isVisible" @click:outside="closeModal" max-width="600">
     <v-card>
       <v-card-title>
-        <span class="headline">Информация о точке {{ props.point?.title }}</span>
+        <span class="headline">Информация о точке {{ point?.title || '' }}</span>
       </v-card-title>
       <v-card-text>
         <p>Координаты:</p>
-        <p>{{ props.point?.coordinate }}</p>
+        <p>{{ point?.coordinate || '' }}</p>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>

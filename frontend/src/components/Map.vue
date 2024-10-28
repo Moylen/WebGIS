@@ -8,11 +8,12 @@ import axios from '../api/axios.ts';
 import { Coordinate, Paginate, Point } from '../types';
 import PointModal from './PointModal.vue';
 import { arraysAreEqual, getCoordinatesFromFeatures } from '../utils';
+import { fromLonLat } from 'ol/proj';
 
 // Constants
-const MAP_CENTER = [92.7975620, 55.9945039];
+const MAP_PROJECTION = 'EPSG:3857';
+const MAP_CENTER = fromLonLat([92.7975620, 55.9945039], MAP_PROJECTION);
 const MAP_ZOOM = 15;
-const MAP_PROJECTION = 'EPSG:4326';
 
 // Api
 const getAllPointsCoords = async (): Promise<void> => {
@@ -25,7 +26,7 @@ const points = ref<Point[]>([]);
 const selectedPoint = ref<Point | undefined>();
 const isModalFormVisible = ref<boolean>(false);
 const isPointModalVisible = ref<boolean>(false);
-const newMarkerCoords = ref<Coordinate | null>(null);
+const newMarkerCoords = ref<Coordinate | undefined>();
 
 // Handlers
 const handleMapClick = (e: MapBrowserEvent<UIEvent>): void => {
@@ -80,10 +81,10 @@ onMounted(() => {
     </Map.OlMap>
   </v-container>
   <PointCreateModalForm
-    :coords="newMarkerCoords"
+    :coordinates="newMarkerCoords"
     :is-visible="isModalFormVisible"
     @close="isModalFormVisible = false"
-    @point-add="(point: Point) => points.push(point)"
+    @pointadd="(point: Point) => points.push(point)"
   />
   <PointModal
     :is-visible="isPointModalVisible"

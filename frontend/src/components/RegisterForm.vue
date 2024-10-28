@@ -29,9 +29,9 @@ const { value: password } = useField<string>('password');
 const onSubmit = handleSubmit(async () => {
   try {
     await axios.post<User>('/auth/register', {
-      username: username,
-      email: email,
-      password: password,
+      username: username.value,
+      email: email.value,
+      password: password.value,
     });
     await router.push('/login');
   } catch (error) {
