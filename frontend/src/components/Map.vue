@@ -65,7 +65,7 @@ onMounted(() => {
       <Layers.OlVectorLayer>
         <Sources.OlSourceVector>
 
-          <Map.OlFeature v-for="point in points">
+          <Map.OlFeature v-for="point in points" :key='point.id'>
             <Geometries.OlGeomPoint :coordinates="point.coordinate" />
             <Styles.OlStyle>
 

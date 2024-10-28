@@ -16,7 +16,12 @@ import {
   Geometries,
   Styles,
   Interactions,
+  type Vue3OpenlayersGlobalOptions,
 } from 'vue3-openlayers';
+
+const options: Vue3OpenlayersGlobalOptions = {
+  debug: Boolean(Number(import.meta.env.VITE_DEBUG)),
+}
 
 // Vuetify
 import 'vuetify/styles';
@@ -40,7 +45,7 @@ createApp(App)
   .use(pinia)
   .use(vuetify)
   .use(router)
-  .use(Map)
+  .use(Map, options)
   .use(Layers)
   .use(Sources)
   .use(Geometries)
