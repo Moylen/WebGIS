@@ -3,6 +3,7 @@ import { useField, useForm } from 'vee-validate';
 import { IComment } from '../interfaces';
 import * as yup from 'yup';
 import api from '../api/api.ts';
+import { commentService } from '../services/CommentService.ts';
 
 const props = defineProps<{
   pointId?: number;
@@ -26,12 +27,10 @@ const { value: score } = useField<number>('score', undefined, {
 
 const onSubmit = handleSubmit(async () => {
   try {
-    const response = await api.post<IComment>('/comment', {
-      pointId: props.pointId,
-      text: text.value,
-      score: score.value,
-    });
-    emit('comment-add', response.data);
+    if (!props.pointId) return;
+    const comment = await commentService.save(props.pointId, text.value, score.value);
+
+    emit('comment-add', comment);
     resetField('text');
   } catch (error) {
     console.error(error);

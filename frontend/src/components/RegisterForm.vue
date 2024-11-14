@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { useForm, useField } from 'vee-validate';
 import * as yup from 'yup';
-import api from '../api/api.ts';
-import { IUser } from '../interfaces';
 import router from '../router';
+import { authService } from '../services/AuthService.ts';
 
 // Form
 const { handleSubmit, errors } = useForm({
@@ -20,11 +19,7 @@ const { value: password } = useField<string>('password');
 
 const onSubmit = handleSubmit(async () => {
   try {
-    await api.post<IUser>('/auth/register', {
-      username: username.value,
-      email: email.value,
-      password: password.value,
-    });
+    await authService.register(username.value, email.value, password.value);
     await router.push('/login');
   } catch (error) {
     console.error(error);

@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { useField, useForm } from 'vee-validate';
 import * as yup from 'yup';
-import { IAccessToken } from '../interfaces';
 import router from '../router';
-import api from '../api/api.ts';
 import { useAuthStore } from '../store/auth.ts';
+import { authService } from '../services/AuthService.ts';
 
 // Store
 const authStore = useAuthStore();
@@ -22,11 +21,8 @@ const { value: password } = useField<string>('password');
 
 const onSubmit = handleSubmit(async () => {
   try {
-    const response = await api.post<IAccessToken>('/auth/login', {
-      email: email.value,
-      password: password.value,
-    });
-    authStore.login(response.data.accessToken);
+    const token = await authService.login(email.value, password.value);
+    authStore.login(token.accessToken);
     await router.push('/');
   } catch (error) {
     console.error(error);

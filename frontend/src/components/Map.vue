@@ -4,27 +4,17 @@ import { MapBrowserEvent } from 'ol';
 import { onMounted, ref } from 'vue';
 import { mdiMapMarker } from '@mdi/js';
 import PointCreateModalForm from './PointCreateModalForm.vue';
-import api from '../api/api.ts';
-import { ICoordinate, IPaginate, IPoint } from '../interfaces';
+import { ICoordinate, IPoint } from '../interfaces';
 import PointModal from './PointModal.vue';
 import { getCoordinatesFromFeatures } from '../utils';
 import { fromLonLat } from 'ol/proj';
 import * as _ from 'lodash-es';
+import { pointService } from '../services/PointService.ts';
 
 // Constants
 const MAP_PROJECTION = 'EPSG:3857';
 const MAP_CENTER = fromLonLat([92.797562, 55.9945039], MAP_PROJECTION);
 const MAP_ZOOM = 15;
-
-// Api
-const getAllPointsCoords = async (): Promise<void> => {
-  try {
-    const response = await api.get<IPaginate<IPoint>>('/point');
-    points.value = response.data.items;
-  } catch (error) {
-    console.error(error);
-  }
-};
 
 // Refs
 const points = ref<IPoint[]>([]);
@@ -52,8 +42,8 @@ const handleMapClick = (e: MapBrowserEvent<UIEvent>): void => {
   isModalFormVisible.value = true;
 };
 
-onMounted(() => {
-  getAllPointsCoords();
+onMounted(async () => {
+  points.value = (await pointService.getMany()).items;
 });
 </script>
 
@@ -80,7 +70,7 @@ onMounted(() => {
     </Map.OlMap>
   </v-container>
   <PointCreateModalForm
-    :coordinates="newMarkerCoords"
+    :coordinate="newMarkerCoords"
     :is-visible="isModalFormVisible"
     @close="isModalFormVisible = false"
     @point-add="(point: IPoint) => points.push(point)"

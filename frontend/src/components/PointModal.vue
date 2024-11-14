@@ -2,9 +2,9 @@
 import type { IComment, IPaginate, IPoint } from '../interfaces';
 import CommentForm from './CommentForm.vue';
 import { ref, watch } from 'vue';
-import api from '../api/api.ts';
 import Comment from './Comment.vue';
 import config from '../config';
+import { commentService } from '../services/CommentService.ts';
 
 const props = defineProps<{
   isVisible: boolean;
@@ -16,28 +16,17 @@ const emit = defineEmits<{
 
 const comments = ref<IComment[]>([]);
 
-const getComments = async (pointId: number) => {
-  try {
-    const response = await api.get<IPaginate<IComment>>('/comment/search', {
-      params: {
-        pointId,
-      },
-    });
-    comments.value = response.data.items;
-  } catch (error) {
-    console.error(error);
-  }
-};
-
 const closeModal = (): void => {
   emit('close');
 };
 
 watch(
   () => props.isVisible,
-  () => {
+  async (val) => {
+    if (!val) return;
     if (!props.point?.id) return;
-    getComments(props.point.id);
+
+    comments.value = (await commentService.getMany(props.point.id)).items;
   },
 );
 </script>

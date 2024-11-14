@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { useField, useForm } from 'vee-validate';
 import * as yup from 'yup';
-import api from '../api/api.ts';
 import { ICoordinate, IPoint } from '../interfaces';
+import { pointService } from '../services/PointService.ts';
 
 const props = defineProps<{
   isVisible: boolean;
-  coordinates?: ICoordinate;
+  coordinate?: ICoordinate;
 }>();
 const emit = defineEmits<{
   (e: 'close'): void;
@@ -26,22 +26,14 @@ const { value: file } = useField<File | null>('file');
 
 const onSubmit = handleSubmit(async () => {
   try {
-    const pointResponse = await api.post<IPoint>('/point', {
-      title: title.value,
-      coordinate: props.coordinates,
-    });
+    if (!props.coordinate) return;
+    const point = await pointService.save(title.value, props.coordinate);
 
     if (file.value) {
-      const formData = new FormData();
-      formData.append('file', file.value);
-      await api.post<File>(`/point/${pointResponse.data.id}/photo`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      await pointService.uploadPhoto(point.id, file.value);
     }
 
-    emit('point-add', pointResponse.data);
+    emit('point-add', point);
     closeModal();
   } catch (error) {
     console.error(error);
