@@ -1,13 +1,13 @@
-export interface Paginate<T> {
+export interface IPaginate<T> {
   total: number;
   items: T[];
 }
 
-export interface AccessToken {
+export interface IAccessToken {
   accessToken: string;
 }
 
-export interface User {
+export interface IUser {
   id: number;
   email: string;
   username: string;
@@ -15,29 +15,29 @@ export interface User {
   updateTime: Date;
 }
 
-export type Coordinate = number[];
+export type ICoordinate = number[];
 
-export interface File {
+export interface IFile {
   id: number;
   filePath: string;
   mimeType: string;
 }
 
-export interface Point {
+export interface IPoint {
   id: number;
   title: string;
-  coordinate: Coordinate;
-  creator: Omit<User, 'createTime' | 'updateTime'>;
-  photo: File | null;
+  coordinate: ICoordinate;
+  creator: Omit<IUser, 'createTime' | 'updateTime'>;
+  photo: IFile | null;
   createTime: Date;
   updateTime: Date;
 }
 
-export interface Comment {
+export interface IComment {
   id: number;
   text: string;
   score: number;
-  creator: Pick<User, 'id' | 'username'>;
+  creator: Pick<IUser, 'id' | 'username'>;
   createTime: Date;
   updateTime: Date;
 }

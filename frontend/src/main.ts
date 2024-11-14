@@ -21,7 +21,7 @@ import {
 
 const options: Vue3OpenlayersGlobalOptions = {
   debug: Boolean(Number(import.meta.env.VITE_DEBUG)),
-}
+};
 
 // Vuetify
 import 'vuetify/styles';

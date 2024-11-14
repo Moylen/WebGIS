@@ -15,6 +15,6 @@ export const useAuthStore = defineStore('auth', {
       localStorage.removeItem('accessToken');
       this.accessToken = '';
       this.isAuthenticated = !!this.accessToken;
-    }
-  }
-})
+    },
+  },
+});

@@ -20,13 +20,11 @@ const logout = () => {
   <v-app-bar app>
     <v-toolbar-title>WebGIS</v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-btn v-if='authStore.isAuthenticated' @click='goToHome'>Главная</v-btn>
-    <v-btn v-if='!authStore.isAuthenticated' @click='goToRegister'>Регистрация</v-btn>
-    <v-btn v-if='!authStore.isAuthenticated' @click='goToLogin'>Авторизация</v-btn>
-    <v-btn v-if='authStore.isAuthenticated' @click='logout'>Выйти</v-btn>
+    <v-btn v-if="authStore.isAuthenticated" @click="goToHome">Главная</v-btn>
+    <v-btn v-if="!authStore.isAuthenticated" @click="goToRegister">Регистрация</v-btn>
+    <v-btn v-if="!authStore.isAuthenticated" @click="goToLogin">Авторизация</v-btn>
+    <v-btn v-if="authStore.isAuthenticated" @click="logout">Выйти</v-btn>
   </v-app-bar>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
