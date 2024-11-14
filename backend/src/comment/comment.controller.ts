@@ -42,7 +42,7 @@ export class CommentController {
 
   @UseInterceptors(new TransformInterceptor(CommentSearchSchema))
   @ApiOkResponse({ type: CommentSearchSchema })
-  @Get('/search')
+  @Get()
   async search(@Query() dto: CommentSearchDto) {
     return this.commentService.search(dto);
   }
