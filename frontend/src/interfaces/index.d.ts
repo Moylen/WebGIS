@@ -32,3 +32,12 @@ export interface Point {
   createTime: Date;
   updateTime: Date;
 }
+
+export interface Comment {
+  id: number;
+  text: string;
+  score: number;
+  creator: Pick<User, 'id' | 'username'>;
+  createTime: Date;
+  updateTime: Date;
+}

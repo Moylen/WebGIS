@@ -43,6 +43,7 @@ export class PointService {
       },
       relations: {
         creator: true,
+        photo: true,
       },
     });
 
@@ -58,6 +59,8 @@ export class PointService {
 
     const searchQuery = this.pointRepository
       .createQueryBuilder('model')
+      .leftJoinAndSelect('model.photo', 'photo')
+      .leftJoinAndSelect('model.creator', 'creator')
       .skip(page * pageSize)
       .take(pageSize);
 

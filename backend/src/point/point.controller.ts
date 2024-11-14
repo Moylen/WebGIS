@@ -61,6 +61,7 @@ export class PointController {
   async findById(@Param('id', ParseIntPipe) id: number) {
     return this.pointService.findByIdOrPanic(id);
   }
+
   @UseInterceptors(new TransformInterceptor(PointSchema))
   @ApiOkResponse({ type: PointSchema })
   @Put(':id')
