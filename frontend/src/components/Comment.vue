@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { IComment } from '../interfaces';
-import dayjs from 'dayjs';
+import { processViewDate } from '../utils';
 
 const props = defineProps<{
   comment: IComment;
@@ -23,7 +23,7 @@ const props = defineProps<{
     </v-card-text>
 
     <v-card-text class="pt-0 text-end text-caption">
-      {{ dayjs(props.comment.createTime).format('DD-MM-YYYY HH:mm') }}
+        Добавлен: {{ processViewDate(props.comment.createTime) }}
     </v-card-text>
   </v-card>
 </template>
