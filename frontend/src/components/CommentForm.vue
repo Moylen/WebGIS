@@ -2,7 +2,6 @@
 import { useField, useForm } from 'vee-validate';
 import { IComment } from '../interfaces';
 import * as yup from 'yup';
-import api from '../api/api.ts';
 import { commentService } from '../services/CommentService.ts';
 
 const props = defineProps<{

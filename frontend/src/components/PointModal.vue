@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { IComment, IPaginate, IPoint } from '../interfaces';
+import type { IComment, IPoint } from '../interfaces';
 import CommentForm from './CommentForm.vue';
 import { ref, watch } from 'vue';
 import Comment from './Comment.vue';
