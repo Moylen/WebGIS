@@ -65,7 +65,7 @@ export class PointService {
       .take(pageSize);
 
     if (dto.query) {
-      searchQuery.andWhere('model.title LIKE :query', {
+      searchQuery.andWhere('LOWER(model.title) LIKE LOWER(:query)', {
         query: `%${dto.query}%`,
       });
     }
