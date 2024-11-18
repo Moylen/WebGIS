@@ -2,8 +2,12 @@ import api from '../api/api.ts';
 import { ICoordinate, IPaginate, IPoint } from '../interfaces';
 
 class PointService {
-  async getMany(): Promise<IPaginate<IPoint>> {
-    const response = await api.get<IPaginate<IPoint>>('/point');
+  async getMany(query?: string): Promise<IPaginate<IPoint>> {
+    const response = await api.get<IPaginate<IPoint>>('/point', {
+      params: {
+        query,
+      },
+    });
     return response.data;
   }
 
