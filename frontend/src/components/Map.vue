@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Map, Layers, Sources, Geometries, Styles } from 'vue3-openlayers';
-import { MapBrowserEvent } from 'ol';
-import { onMounted, ref } from 'vue';
+import { MapBrowserEvent, View } from 'ol';
+import { nextTick, onMounted, ref } from 'vue';
 import { mdiMapMarker, mdiFormatListNumbered } from '@mdi/js';
 import PointCreateModalForm from './PointCreateModalForm.vue';
 import { ICoordinate, IPoint } from '../interfaces';
@@ -24,6 +24,7 @@ const mapCenter = ref<ICoordinate>(fromLonLat([92.797562, 55.9945039], MAP_PROJE
 const isModalFormVisible = ref<boolean>(false);
 const isPointModalVisible = ref<boolean>(false);
 const isSidebarVisible = ref<boolean>(false);
+const view = ref();
 
 // Handlers
 const handleMapClick = (e: MapBrowserEvent<UIEvent>): void => {
@@ -44,6 +45,14 @@ const handleMapClick = (e: MapBrowserEvent<UIEvent>): void => {
   isModalFormVisible.value = true;
 };
 
+const handlePointChoose = (coordinate: ICoordinate) => {
+  if (!view.value) return;
+  view.value.animate({
+    center: coordinate,
+    duration: 1000,
+  });
+};
+
 onMounted(async () => {
   points.value = (await pointService.getMany()).items;
 });
@@ -51,7 +60,7 @@ onMounted(async () => {
 
 <template>
   <v-container fluid class="h-100">
-    <Map.OlMap ref="mapRef" class="h-100 position-relative" @click="handleMapClick">
+    <Map.OlMap class="h-100 position-relative" @click="handleMapClick">
       <v-btn
         class="position-absolute"
         style="z-index: 100; top: 10px; right: 10px"
@@ -59,7 +68,7 @@ onMounted(async () => {
       >
         <v-icon :size="32" :icon="mdiFormatListNumbered" />
       </v-btn>
-      <Map.OlView :center="mapCenter" :zoom="MAP_ZOOM" :projection="MAP_PROJECTION" />
+      <Map.OlView :ref="(el) => (view = el)" :center="mapCenter" :zoom="MAP_ZOOM" :projection="MAP_PROJECTION" />
       <Layers.OlTileLayer>
         <Sources.OlSourceOsm />
       </Layers.OlTileLayer>
@@ -85,5 +94,5 @@ onMounted(async () => {
     @point-add="(point: IPoint) => points.push(point)"
   />
   <PointModal :is-visible="isPointModalVisible" :point="selectedPoint" @close="isPointModalVisible = false" />
-  <PointSidebar @set-center="(coordinate) => (mapCenter = coordinate)" :is-visible="isSidebarVisible" />
+  <PointSidebar :is-visible="isSidebarVisible" @set-center="(coordinate) => handlePointChoose(coordinate)" />
 </template>

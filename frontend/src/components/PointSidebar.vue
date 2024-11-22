@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { ICoordinate, IPoint } from '../interfaces';
+import { IAutocomplete, ICoordinate, IPoint } from '../interfaces';
 import { pointService } from '../services/PointService.ts';
 import { processViewDate } from '../utils';
 
@@ -13,11 +13,13 @@ const emit = defineEmits<{
 
 // Refs
 const points = ref<IPoint[]>([]);
+const autocomplete = ref<IAutocomplete[]>([]);
 const searchInput = ref<string>('');
 
 // Handlers
-const handleInput = async () => {
-  points.value = (await pointService.getMany(searchInput.value)).items;
+const onInputChange = async (value: string) => {
+  points.value = (await pointService.getMany(value)).items;
+  autocomplete.value = await pointService.getAutocomplete(value);
 };
 
 onMounted(async () => {
@@ -29,7 +31,13 @@ onMounted(async () => {
   <v-navigation-drawer v-model="props.isVisible" :location="'right'" :width="400">
     <v-list>
       <v-list-item>
-        <v-text-field v-model="searchInput" @input="handleInput" label="Поиск" />
+        <v-combobox
+          label="Поиск"
+          v-model="searchInput"
+          @update:model-value="onInputChange"
+          :items="autocomplete.map((item) => item.title)"
+          clearable
+        />
       </v-list-item>
       <v-list-item v-for="point in points">
         <v-card

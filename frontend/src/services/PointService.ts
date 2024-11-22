@@ -1,9 +1,18 @@
 import api from '../api/api.ts';
-import { ICoordinate, IPaginate, IPoint } from '../interfaces';
+import { IAutocomplete, ICoordinate, IPaginate, IPoint } from '../interfaces';
 
 class PointService {
   async getMany(query?: string): Promise<IPaginate<IPoint>> {
     const response = await api.get<IPaginate<IPoint>>('/point', {
+      params: {
+        query,
+      },
+    });
+    return response.data;
+  }
+
+  async getAutocomplete(query?: string): Promise<IAutocomplete[]> {
+    const response = await api.get<IAutocomplete[]>('/point/autocomplete', {
       params: {
         query,
       },

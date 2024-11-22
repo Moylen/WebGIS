@@ -3,6 +3,11 @@ export interface IPaginate<T> {
   items: T[];
 }
 
+export interface IAutocomplete {
+  id: number;
+  title: string;
+}
+
 export interface IAccessToken {
   accessToken: string;
 }
