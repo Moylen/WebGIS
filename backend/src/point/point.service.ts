@@ -60,6 +60,9 @@ export class PointService {
       where: {
         title: ILike(`%${dto.query}%`),
       },
+      order: {
+        title: 'ASC',
+      },
       take: 25,
     });
   }
