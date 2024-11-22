@@ -5,12 +5,13 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PointEntity } from './entities/point.entity';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, ILike, Repository } from 'typeorm';
 import { PointSaveDto } from './dtos/point-save.dto';
 import { JwtContext } from '../auth/types/jwt-user.type';
 import { UserService } from '../user/user.service';
 import { PointSearchDto } from './dtos/point-search.dto';
 import { FileService } from '../file/file.service';
+import { AutocompleteDto } from '../shared/dtos/autocomplete.dto';
 
 @Injectable()
 export class PointService {
@@ -54,6 +55,15 @@ export class PointService {
     return point;
   }
 
+  async autocomplete(dto: AutocompleteDto): Promise<PointEntity[]> {
+    return await this.pointRepository.find({
+      where: {
+        title: ILike(`%${dto.query}%`),
+      },
+      take: 25,
+    });
+  }
+
   async search(dto: PointSearchDto) {
     const { page = 0, pageSize = 25 } = dto;
 
@@ -65,7 +75,7 @@ export class PointService {
       .take(pageSize);
 
     if (dto.query) {
-      searchQuery.andWhere('LOWER(model.title) LIKE LOWER(:query)', {
+      searchQuery.andWhere('model.title ILIKE :query', {
         query: `%${dto.query}%`,
       });
     }

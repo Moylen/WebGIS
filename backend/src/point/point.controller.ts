@@ -33,6 +33,8 @@ import { PointSearchDto } from './dtos/point-search.dto';
 import { PointSearchSchema } from './schemas/point-search.schema';
 import { FileSaveDto } from '../file/dtos/file-save.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { AutocompleteDto } from '../shared/dtos/autocomplete.dto';
+import { AutocompleteSchema } from '../shared/schemas/autocomplete.schema';
 
 @ApiBearerAuth()
 @ApiTags('Point')
@@ -53,6 +55,13 @@ export class PointController {
   @Get()
   async search(@Query() dto: PointSearchDto) {
     return this.pointService.search(dto);
+  }
+
+  @UseInterceptors(new TransformInterceptor(AutocompleteSchema))
+  @ApiOkResponse({ type: AutocompleteSchema })
+  @Get('autocomplete')
+  async autocomplete(@Query() dto: AutocompleteDto) {
+    return this.pointService.autocomplete(dto);
   }
 
   @UseInterceptors(new TransformInterceptor(PointSchema))
