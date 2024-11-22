@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Map, Layers, Sources, Geometries, Styles } from 'vue3-openlayers';
-import { MapBrowserEvent, View } from 'ol';
-import { nextTick, onMounted, ref } from 'vue';
+import { MapBrowserEvent } from 'ol';
+import { onMounted, ref } from 'vue';
 import { mdiMapMarker, mdiFormatListNumbered } from '@mdi/js';
 import PointCreateModalForm from './PointCreateModalForm.vue';
 import { ICoordinate, IPoint } from '../interfaces';
