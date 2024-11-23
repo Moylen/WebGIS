@@ -59,7 +59,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <v-container fluid class="h-100">
+  <v-container fluid class="h-100 px-0 py-0">
     <Map.OlMap class="h-100 position-relative" @click="handleMapClick">
       <v-btn
         class="position-absolute"
