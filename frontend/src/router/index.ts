@@ -8,6 +8,16 @@ const routes = [
   {
     path: '/',
     component: HomePage,
+    name: 'Home',
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/point/:id',
+    component: HomePage,
+    name: 'Point',
+    props: true,
     meta: {
       requiresAuth: true,
     },

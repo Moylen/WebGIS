@@ -11,20 +11,22 @@ import { fromLonLat } from 'ol/proj';
 import * as _ from 'lodash-es';
 import { pointService } from '../services/PointService.ts';
 import PointSidebar from './PointSidebar.vue';
+import { useRoute, useRouter } from 'vue-router';
 
 // Constants
 const MAP_PROJECTION = 'EPSG:3857';
 const MAP_ZOOM = 15;
+const MAP_CENTER = fromLonLat([92.797562, 55.9945039], MAP_PROJECTION)
 
 // Refs
 const points = ref<IPoint[]>([]);
-const selectedPoint = ref<IPoint>();
 const newMarkerCoords = ref<ICoordinate>();
-const mapCenter = ref<ICoordinate>(fromLonLat([92.797562, 55.9945039], MAP_PROJECTION));
 const isModalFormVisible = ref<boolean>(false);
-const isPointModalVisible = ref<boolean>(false);
 const isSidebarVisible = ref<boolean>(false);
 const view = ref();
+
+const router = useRouter();
+const route = useRoute();
 
 // Handlers
 const handleMapClick = (e: MapBrowserEvent<UIEvent>): void => {
@@ -35,8 +37,11 @@ const handleMapClick = (e: MapBrowserEvent<UIEvent>): void => {
 
     if (!coordinates) return;
 
-    selectedPoint.value = points.value.find((point: IPoint) => _.isEqual(point.coordinate, coordinates));
-    isPointModalVisible.value = !!selectedPoint.value;
+    const selectedPoint = points.value.find((point: IPoint) => _.isEqual(point.coordinate, coordinates));
+
+    if (!selectedPoint) return;
+
+    router.push({ name: 'Point', params: { id: selectedPoint.id } });
 
     return;
   }
@@ -68,7 +73,7 @@ onMounted(async () => {
       >
         <v-icon :size="32" :icon="mdiFormatListNumbered" />
       </v-btn>
-      <Map.OlView :ref="(el) => (view = el)" :center="mapCenter" :zoom="MAP_ZOOM" :projection="MAP_PROJECTION" />
+      <Map.OlView :ref="(el) => (view = el)" :center="MAP_CENTER" :zoom="MAP_ZOOM" :projection="MAP_PROJECTION" />
       <Layers.OlTileLayer>
         <Sources.OlSourceOsm />
       </Layers.OlTileLayer>
@@ -93,6 +98,6 @@ onMounted(async () => {
     @close="isModalFormVisible = false"
     @point-add="(point: IPoint) => points.push(point)"
   />
-  <PointModal :is-visible="isPointModalVisible" :point="selectedPoint" @close="isPointModalVisible = false" />
+  <PointModal v-if="route.params.id" :pointId="Number(route.params.id)" />
   <PointSidebar :is-visible="isSidebarVisible" @set-center="(coordinate) => handlePointChoose(coordinate)" />
 </template>

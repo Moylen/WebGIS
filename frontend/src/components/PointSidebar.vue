@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue';
 import { IAutocomplete, ICoordinate, IPoint } from '../interfaces';
 import { pointService } from '../services/PointService.ts';
 import { processViewDate } from '../utils';
+import { debounce as _debounce } from 'lodash-es';
 
 const props = defineProps<{
   isVisible: boolean;
@@ -17,10 +18,10 @@ const autocomplete = ref<IAutocomplete[]>([]);
 const searchInput = ref<string>('');
 
 // Handlers
-const onInputChange = async (value: string) => {
+const onInputChange = _debounce(async (value: string) => {
   points.value = (await pointService.getMany(value)).items;
   autocomplete.value = await pointService.getAutocomplete(value);
-};
+}, 250);
 
 onMounted(async () => {
   points.value = (await pointService.getMany()).items;

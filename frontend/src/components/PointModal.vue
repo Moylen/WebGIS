@@ -1,40 +1,38 @@
 <script setup lang="ts">
 import type { IComment, IPoint } from '../interfaces';
 import CommentForm from './CommentForm.vue';
-import { ref, watch } from 'vue';
+import { onMounted, ref } from 'vue';
 import Comment from './Comment.vue';
 import config from '../config';
 import { commentService } from '../services/CommentService.ts';
+import { useRouter } from 'vue-router';
+import { pointService } from '../services/PointService.ts';
 
 const props = defineProps<{
-  isVisible: boolean;
-  point?: IPoint;
-}>();
-const emit = defineEmits<{
-  (e: 'close'): void;
+  pointId: number;
 }>();
 
+const router = useRouter();
 const comments = ref<IComment[]>([]);
+const point = ref<IPoint>();
+const isLoading = ref<boolean>(true);
 
 const closeModal = (): void => {
-  emit('close');
+  router.push({ name: 'Home' });
 };
 
-watch(
-  () => props.isVisible,
-  async (val) => {
-    if (!val) return;
-    if (!props.point?.id) return;
+onMounted(async () => {
+  point.value = await pointService.getOne(props.pointId);
+  comments.value = (await commentService.getMany(props.pointId)).items;
 
-    comments.value = (await commentService.getMany(props.point.id)).items;
-  },
-);
+  isLoading.value = false;
+});
 </script>
 
 <template>
-  <v-dialog v-model="props.isVisible" @click:outside="closeModal" max-width="800">
-    <v-card>
-      <v-card-title class="headline"> Информация о точке {{ props.point?.title || '' }} </v-card-title>
+  <v-dialog :model-value="true" @click:outside="closeModal" max-width="800">
+    <v-card v-if='!isLoading'>
+      <v-card-title class="headline"> Информация о точке {{ point?.title || '' }}</v-card-title>
       <v-card-item>
         <v-img v-if="point?.photo?.filePath" :src="config.baseURL + point.photo.filePath" />
       </v-card-item>
@@ -43,8 +41,11 @@ watch(
         <CommentForm @comment-add="(comment: IComment) => comments.unshift(comment)" :point-id="point?.id" />
       </v-card-item>
       <v-card-item>
-        <Comment v-for="comment in comments" :key="comment.id" :comment="comment" />
+        <Comment v-if='!isLoading' v-for="comment in comments" :key="comment.id" :comment="comment" />
       </v-card-item>
+    </v-card>
+    <v-card v-else class='justify-center align-center' height='100vh'>
+      <v-progress-circular indeterminate />
     </v-card>
   </v-dialog>
 </template>

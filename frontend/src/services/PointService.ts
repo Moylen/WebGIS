@@ -11,6 +11,11 @@ class PointService {
     return response.data;
   }
 
+  async getOne(id: number): Promise<IPoint> {
+    const response = await api.get<IPoint>(`/point/${id}`);
+    return response.data;
+  }
+
   async getAutocomplete(query?: string): Promise<IAutocomplete[]> {
     const response = await api.get<IAutocomplete[]>('/point/autocomplete', {
       params: {
